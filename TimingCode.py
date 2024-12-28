@@ -92,7 +92,7 @@ if __name__ == "__main__":
     mean_times = [result['mean_time'] for result in timing_results_Quadrature]
     std_times = [result['std_time'] for result in timing_results_Quadrature]
     plt.loglog(x_values, mean_times, marker="s", label="GL n=2")
-    
+
     #time quadrature
     n = 16
     nodes, weights = np.polynomial.legendre.leggauss(n)
@@ -130,7 +130,7 @@ if __name__ == "__main__":
     plt.xlabel("x", fontsize=14)
     plt.ylabel("Execution Time (seconds)", fontsize=14)
     plt.legend(loc='upper left', bbox_to_anchor=(1, 1), handler_map={line_goldin: HandlerLineEmoji()})
-    
+    plt.ylim(5e-7, 2e-6)
     plt.grid()
     plt.savefig("Timing_" + str(num_repeats) + ".pdf")
     plt.show()
