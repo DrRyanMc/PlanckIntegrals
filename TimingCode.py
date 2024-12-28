@@ -66,7 +66,7 @@ if __name__ == "__main__":
     mean_times = [result['mean_time'] for result in timing_results_Clark]
     std_times = [result['std_time'] for result in timing_results_Clark]
     plt.loglog(x_values, mean_times, label="Clark")
-
+    print(f"Clark mean times: {np.mean(mean_times)} std times: {np.mean(std_times)}")
     #time polylog
     f = lambda a,b: PolyLog.b_Poly(a,b)
     timing_results_Poly = time_function(f, num_repeats=num_repeats)
@@ -74,7 +74,7 @@ if __name__ == "__main__":
     mean_times = [result['mean_time'] for result in timing_results_Poly]
     std_times = [result['std_time'] for result in timing_results_Poly]
     plt.loglog(x_values, mean_times, linestyle="dashed", label="PolyLog")
-
+    print(f"PolyLog mean times: {np.mean(mean_times)} std times: {np.mean(std_times)}")
     #time rational
     f = lambda a,b: RationalApprox.bRational(a,b)
     timing_results_Rational = time_function(f, num_repeats=num_repeats)
@@ -82,7 +82,7 @@ if __name__ == "__main__":
     mean_times = [result['mean_time'] for result in timing_results_Rational]
     std_times = [result['std_time'] for result in timing_results_Rational]
     plt.loglog(x_values, mean_times, linestyle="-.", label="Rational")
-
+    print(f"Rational mean times: {np.mean(mean_times)} std times: {np.mean(std_times)}")
     #time quadrature
     n = 2
     nodes, weights = np.polynomial.legendre.leggauss(n)
@@ -92,7 +92,7 @@ if __name__ == "__main__":
     mean_times = [result['mean_time'] for result in timing_results_Quadrature]
     std_times = [result['std_time'] for result in timing_results_Quadrature]
     plt.loglog(x_values, mean_times, marker="s", label="GL n=2")
-
+    print(f"GL n=2 mean times: {np.mean(mean_times)} std times: {np.mean(std_times)}")
     #time quadrature
     n = 16
     nodes, weights = np.polynomial.legendre.leggauss(n)
@@ -102,7 +102,7 @@ if __name__ == "__main__":
     mean_times = [result['mean_time'] for result in timing_results_Quadrature]
     std_times = [result['std_time'] for result in timing_results_Quadrature]
     plt.loglog(x_values, mean_times, marker="o", label="GL n=16")
-
+    print(f"GL n=16 mean times: {np.mean(mean_times)} std times: {np.mean(std_times)}")
     #time zimmerman
     f = lambda a,b: Zimmerman.zimInt(a,b)
     timing_results_Zimmerman = time_function(f, num_repeats=num_repeats)
@@ -110,7 +110,7 @@ if __name__ == "__main__":
     mean_times = [result['mean_time'] for result in timing_results_Zimmerman]
     std_times = [result['std_time'] for result in timing_results_Zimmerman]
     plt.loglog(x_values, mean_times, marker="^", label="Zimmerman")
-
+    print(f"Zimmerman mean times: {np.mean(mean_times)} std times: {np.mean(std_times)}")
     #time goldin
     f = lambda a,b: Goldin.bGoldin(a,b)
     timing_results_Goldin = time_function(f, num_repeats=num_repeats)
@@ -118,6 +118,8 @@ if __name__ == "__main__":
     mean_times = [result['mean_time'] for result in timing_results_Goldin]
     std_times = [result['std_time'] for result in timing_results_Goldin]
     line_goldin, = plt.loglog(x_values, mean_times,color='gray', label="Goldin")
+    print(f"Goldin mean times: {np.mean(mean_times)} std times: {np.mean(std_times)}")
+
 # Add emoji markers manually
     for x, y in zip(x_values, mean_times):
         plt.text(x, y, '☭', fontsize=12, ha='center', va='center')
