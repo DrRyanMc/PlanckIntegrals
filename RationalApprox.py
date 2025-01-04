@@ -192,7 +192,7 @@ def bRational(a,b):
     elif (a >= 4.60834547959553635713012610745557043569) and (b >= 4.60834547959553635713012610745557043569):
         return PlanckIntC(b) - PlanckIntC(a)
     else:
-        assert 0, "Invalid input values"
+        assert 0, "Invalid input values" + str(a) + " " + str(b)
 @njit(fastmath=True, cache=True, parallel=True)
 def bRationalParallel(x,n):
     """

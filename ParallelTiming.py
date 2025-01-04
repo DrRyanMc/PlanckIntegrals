@@ -6,7 +6,7 @@ from numba import njit
 import time
 import matplotlib.pyplot as plt
 import PolyLog
-import MPMathIntegral
+#import MPMathIntegral
 import RationalApprox
 import Zimmerman
 import Goldin
@@ -85,7 +85,7 @@ if __name__ == "__main__":
     #print(f"MPMath time: {mp_time}")
     # Plot the results
     fig, ax = plt.subplots()
-    plt.boxplot([clark_time, clark_time93, poly_time, rational_time, zimmerman_time, goldin_time, quad_time4, quad_time8, quad_time16], labels=["Clark 21-10", "Clark 9-3", "PolyLog", "Rational", "Zimmerman", "Goldin", "Quadrature n=4", "Quadrature n=8", "Quadrature n=16"])
+    plt.boxplot([clark_time, clark_time93, poly_time, rational_time, zimmerman_time, goldin_time, quad_time4, quad_time8, quad_time16], tick_labels=["Clark 21-10", "Clark 9-3", "PolyLog", "Rational", "Zimmerman", "Goldin", "Quadrature n=4", "Quadrature n=8", "Quadrature n=16"])
     plt.yscale('log')
     plt.ylabel("Time per function call (s)")
     plt.xticks(rotation=45, ha='right')
