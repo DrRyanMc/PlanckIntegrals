@@ -1,7 +1,8 @@
 import numpy as np
-from numba import njit
+import math
+from numba import njit,prange
 
-@njit(fastmath=True)
+@njit(fastmath=True, cache=True)
 def PlanckIntA(z):
     """
     Evaluate the polynomial approximation to the Planck Integral using Horner's method when
@@ -37,7 +38,7 @@ def PlanckIntA(z):
 
     return result
 
-@njit(fastmath=True)
+@njit(fastmath=True, cache=True)
 def PlanckIntB(z):
     """
     Evaluate the rational polynomial approximation to Planck's Integral
@@ -103,7 +104,7 @@ def PlanckIntB(z):
     # Compute the rational polynomial
     return numerator / denominator
 
-@njit(fastmath=True)
+@njit(fastmath=True, cache=True)
 def PlanckIntC(z):
     """
     Evaluate the rational polynomial approximation to Planck's Integral using Horner's method.
@@ -160,9 +161,10 @@ def PlanckIntC(z):
 
     # Evaluate numerator using Horner's method
     numerator = 0.0
-    for coeff in numerator_coefficients:
-        numerator = numerator * z + coeff
-
+    #for coeff in numerator_coefficients:
+    #    numerator = numerator * z + coeff
+    for i in prange(len(numerator_coefficients)):
+        numerator = numerator * z + numerator_coefficients[i]
     # Evaluate denominator using Horner's method
     denominator = 0.0
     for coeff in denominator_coefficients:
@@ -172,7 +174,7 @@ def PlanckIntC(z):
 
     return z*numerator / denominator
 
-@njit(fastmath=True)
+@njit(fastmath=True, cache=True)
 def bRational(a,b):
     """
     Evaluate the rational polynomial approximation to the Planck Integral using Horner's method.
@@ -191,11 +193,24 @@ def bRational(a,b):
         return PlanckIntC(b) - PlanckIntC(a)
     else:
         assert 0, "Invalid input values"
+@njit(fastmath=True, cache=True, parallel=True)
+def bRationalParallel(x,n):
+    """
+    Evalaute the Planck Integral using the rational polynomial approximation in parallel over a n
+    number of groups
 
+    parameters:
+    x (np.ndarray): The energy group bounds
+    n (int): number of energy groups (must be length of x - 1)
+    """
+    result = np.zeros(n)
+    for i in prange(len(x)-1):
+        result[i] = bRational(x[i],x[i+1])
+    return result
 if __name__ == "__main__":
     # Test the polynomial evaluation
     try:
-        from MPMathIntegral import compute_Pi
+        from MPMathIntegral import compute_Pi, compute_PiParallel
         # Example usage
         z_value = 0.5  # Replace with the desired value of z
         result = PlanckIntA(z_value)
@@ -247,5 +262,13 @@ if __name__ == "__main__":
         print(f"Integral from 19.9 to 50: {result_diff}")
         print(f"MPMath result: {result_MP}")
         print(f"Error: {abs(result_diff - result_MP)}")
+
+        #test parallel
+        x = np.zeros(101)
+        x[1:] = np.logspace(-1,math.log10(40),100)
+        result_diff = bRationalParallel(x,100)
+        result_MP = compute_PiParallel(x,100)
+        print(f"Max error: {np.max(np.abs(result_diff - result_MP))}")
+
     except Exception as e:
         print(f"Error in evaluate_polynomial: {e}")

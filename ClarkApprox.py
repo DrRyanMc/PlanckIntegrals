@@ -2,9 +2,9 @@ import numpy as np
 from numba import njit, jit
 import matplotlib.pyplot as plt
 import math
-from numba import njit
+from numba import njit,prange
 
-@njit(fastmath=True)
+@njit(fastmath=True,cache=True)
 def optimized_polynomial_with_degree_numba(a, max_degree=21):
     """
     Compute the polynomial up to the specified max degree efficiently using Horner's method with Numba.
@@ -67,7 +67,7 @@ def optimized_polynomial_with_degree_numba(a, max_degree=21):
     
     return (15 / np.pi**4)*result
 
-@njit(fastmath=True)
+@njit(fastmath=True,cache=True)
 def compute_Pi_L(x, L):
     """
     Use the L term power series representation of the Polylogarithm
@@ -100,12 +100,12 @@ def compute_Pi_L(x, L):
     
     return Pi_L
 
-@njit 
+@njit(fastmath=True,cache=True)
 def clark_intermediate(x,N=21,L=10):
     Lval = compute_Pi_L(x,L)
     Nval = optimized_polynomial_with_degree_numba(x,max_degree=N)
     return Nval*(Nval<Lval) + (Lval-1)*(Nval>=Lval),(Nval>Lval)
-@njit 
+@njit(fastmath=True,cache=True)
 def clark_formula(a,b,N=21,L=9):
     bval,up = clark_intermediate(b,N,L)
     if bval < 0.:
@@ -115,7 +115,19 @@ def clark_formula(a,b,N=21,L=9):
         aval += 1
     tmp = bval-aval
     return tmp
+@njit(fastmath=True,cache=True,parallel=True)
+def clark_formula_parallel(x,n,N=21,L=9):
+    """
+    Compute the Clark approximation in parallel over n energy groups.
 
+    parameters:
+    x (np.ndarray): The energy group bounds
+    n (int): number of energy groups (must be length of x - 1)
+    """
+    result = np.zeros(n)
+    for i in prange(n):
+        result[i] = clark_formula(x[i],x[i+1],N,L)
+    return result
 if __name__ == "__main__":
     # Test optimized_polynomial_with_degree_numba
     try:
@@ -135,5 +147,18 @@ if __name__ == "__main__":
     try:
         result, flag = clark_intermediate(1.0, 21, 10)
         print(f"clark_intermediate(1.0, 21, 10) = {result}, flag = {flag}")
+        
     except Exception as e:
         print(f"Error in clark_intermediate: {e}")
+
+    # Test clark_formula_parallel
+    from MPMathIntegral import compute_Pi, compute_PiParallel
+    try:
+        x = np.array([0.0, 1.0, 2.0, 3.0, 4.0])
+        result = clark_formula_parallel(x, 4, 21, 10)
+        print(f"clark_formula_parallel({x}, 4, 21, 10) = {result}")
+        resultMP = compute_PiParallel(x, 4)
+        print(f"MPMath result: {resultMP}")
+        print(f"Max Error: {np.max(np.abs(result - resultMP))}")
+    except Exception as e:
+        print(f"Error in clark_formula_parallel: {e}")
