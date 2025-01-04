@@ -30,8 +30,9 @@ def time_function(planck_formula, num_repeats=2):
     n = (n_groups)*n_cells
     x = np.zeros((n_groups+1)*n_cells)
     T = np.linspace(0.1, 4, n_cells)
-    for i in range(n_cells):
-        x[(i*n_groups+1):((i+1)*n_groups+1)] = np.logspace(-1,math.log10(20),n_groups)/T[i]
+    #for i in range(n_cells):
+    #    x[(i*n_groups+1):((i+1)*n_groups+1)] = np.logspace(-1,math.log10(20),n_groups)/T[i]
+    x = np.logspace(-1,math.log10(20),n_groups*n_cells)
     total_time = 0.0
     tmp = planck_formula(x, n)
     times = np.zeros(num_repeats)
