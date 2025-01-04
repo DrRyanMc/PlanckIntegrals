@@ -90,7 +90,7 @@ if __name__ == "__main__":
     # Plot the results
     fig, ax = plt.subplots()
     plt.boxplot([clark_time*1e9, clark_time93*1e9, poly_time*1e9, rational_time*1e9, zimmerman_time*1e9, goldin_time*1e9, quad_time4*1e9, quad_time8*1e9, quad_time16*1e9], 
-                tick_labels=["Clark 21-10", "Clark 9-3", "PolyLog", "Rational", "Zimmerman", "Goldin", "Quadrature n=4", "Quadrature n=8", "Quadrature n=32"],
+                tick_labels=["Clark 21-10", "Clark 9-3", "PolyLog", "Rational", "Zimmerman", "Goldin", "Quadrature n=4", "Quadrature n=16", "Quadrature n=64"],
                 flierprops=dict(marker='.', markersize=1, linestyle='none'))
     #plt.yscale('log')
     plt.ylabel("Time per function call (ns)")
