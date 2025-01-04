@@ -14,12 +14,13 @@ def zimHigh(z):
 
     b = [0.07713864107538,.2807339758744,1.0]  # Denominator coefficients
 
-    numerator = 0.0
-    for coeff in (a):
-        numerator = numerator * z + coeff
-    denominator = 0.0
-    for coeff in (b):
-        denominator = denominator * z + coeff
+    #numerator = 0.0
+    #for coeff in (a):
+    #    numerator = numerator * z + coeff
+    numerator = 6.493939402267 + z*(8.317008834543 + z*(5.570970415031 + z*(2.161761553097 + z*(0.5194172986679 + z*0.07713864107538))))
+    denominator = ((0.07713864107538*z)+0.2807339758744)*z+1.0
+    #for coeff in (b):
+    #    denominator = denominator * z + coeff
     
     return 1 - 0.153989733820265 * numerator/denominator * math.exp(-z)
 @njit(fastmath=True, cache=True)
@@ -60,4 +61,3 @@ if __name__ == "__main__":
     result2 = compute_PiParallel(x,4)
     print(f"MPMath result: {result2}")
     print(f"Max Error: {np.max(np.abs(result - result2))}")
-    
