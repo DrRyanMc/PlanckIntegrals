@@ -76,12 +76,12 @@ if __name__ == "__main__":
     f = lambda x,n: Quadrature.gl_parallel(x,n,4,nodes,weights)
     quad_time4 = time_function(f, num_repeats)
     #print(f"Quadrature time n=2: {quad_time}")
-    nodes, weights = np.polynomial.legendre.leggauss(8)
+    nodes, weights = np.polynomial.legendre.leggauss(16)
     f = lambda x,n: Quadrature.gl_parallel(x,n,8,nodes,weights)
     quad_time8 = time_function(f, num_repeats)
     #print(f"Quadrature time n=16: {quad_time}")
-    nodes, weights = np.polynomial.legendre.leggauss(16)
-    f = lambda x,n: Quadrature.gl_parallel(x,n,16,nodes,weights)
+    nodes, weights = np.polynomial.legendre.leggauss(64)
+    f = lambda x,n: Quadrature.gl_parallel(x,n,64,nodes,weights)
     quad_time16 = time_function(f, num_repeats)
     #print(f"Quadrature time n=20: {quad_time}")
     #f = lambda x,n: MPMathIntegral.compute_PiParallel(x,n)
@@ -90,7 +90,7 @@ if __name__ == "__main__":
     # Plot the results
     fig, ax = plt.subplots()
     plt.boxplot([clark_time*1e9, clark_time93*1e9, poly_time*1e9, rational_time*1e9, zimmerman_time*1e9, goldin_time*1e9, quad_time4*1e9, quad_time8*1e9, quad_time16*1e9], 
-                tick_labels=["Clark 21-10", "Clark 9-3", "PolyLog", "Rational", "Zimmerman", "Goldin", "Quadrature n=4", "Quadrature n=8", "Quadrature n=16"],
+                tick_labels=["Clark 21-10", "Clark 9-3", "PolyLog", "Rational", "Zimmerman", "Goldin", "Quadrature n=4", "Quadrature n=8", "Quadrature n=32"],
                 flierprops=dict(marker='.', markersize=1, linestyle='none'))
     #plt.yscale('log')
     plt.ylabel("Time per function call (ns)")
