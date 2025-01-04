@@ -89,8 +89,10 @@ if __name__ == "__main__":
     #print(f"MPMath time: {mp_time}")
     # Plot the results
     fig, ax = plt.subplots()
-    plt.boxplot([clark_time*1e9, clark_time93*1e9, poly_time*1e9, rational_time*1e9, zimmerman_time*1e9, goldin_time*1e9, quad_time4*1e9, quad_time8*1e9, quad_time16*1e9], tick_labels=["Clark 21-10", "Clark 9-3", "PolyLog", "Rational", "Zimmerman", "Goldin", "Quadrature n=4", "Quadrature n=8", "Quadrature n=16"])
-    #plt.yscale('log')
+    plt.boxplot([clark_time*1e9, clark_time93*1e9, poly_time*1e9, rational_time*1e9, zimmerman_time*1e9, goldin_time*1e9, quad_time4*1e9, quad_time8*1e9, quad_time16*1e9], 
+                tick_labels=["Clark 21-10", "Clark 9-3", "PolyLog", "Rational", "Zimmerman", "Goldin", "Quadrature n=4", "Quadrature n=8", "Quadrature n=16"],
+                outliers=False)
+    plt.yscale('log')
     plt.ylabel("Time per function call (ns)")
     plt.xticks(rotation=45, ha='right')
     plt.tight_layout()
