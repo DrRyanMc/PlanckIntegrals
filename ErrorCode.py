@@ -40,6 +40,8 @@ QuadratureError8_Median = np.zeros(n_group_sets-1)
 QuadratureError8_Max = np.zeros(n_group_sets-1)
 QuadratureError16_Median = np.zeros(n_group_sets-1)
 QuadratureError16_Max = np.zeros(n_group_sets-1)
+QuadratureError64_Median = np.zeros(n_group_sets-1)
+QuadratureError64_Max = np.zeros(n_group_sets-1)
 
 ClarkErrGroup = np.zeros(n_group_sets-1)
 Clark93ErrGroup = np.zeros(n_group_sets-1)
@@ -50,6 +52,7 @@ GoldinErrGroup = np.zeros(n_group_sets-1)
 QuadErr2Group = np.zeros(n_group_sets-1)
 QuadErr8Group = np.zeros(n_group_sets-1)
 QuadErr16Group = np.zeros(n_group_sets-1)
+QuadErr64Group = np.zeros(n_group_sets-1)
 
 np.set_printoptions(precision=15)
 
@@ -127,6 +130,13 @@ for i,num_groups in enumerate(range(3,n_group_sets+2)):
     QuadratureError16_Max[i] = np.max((np.abs(y - y2)/y)[:-1])
     QuadratureError16_Median[i] = np.median(np.abs(y - y2)/y)
     QuadErr16Group[i] = np.argmax(np.abs(y - y2)/y)
+    n=64
+    y2 = Quadrature.gl_parallel(x, num_groups, n, *np.polynomial.legendre.leggauss(n))
+    y2[-1] = 1-np.sum(y2[:-1])
+    QuadratureError64_Max[i] = np.max((np.abs(y - y2)/y)[:-1])
+    QuadratureError64_Median[i] = np.median(np.abs(y - y2)/y)
+    QuadErr64Group[i] = np.argmax(np.abs(y - y2)/y)
+
 
 x = np.arange(3,n_group_sets+2)
 fig, ax = plt.subplots()
@@ -187,6 +197,7 @@ fig, ax = plt.subplots()
 ax.semilogy(x, QuadratureError2_Max,"-", markersize=3, alpha=0.8, label="GL n=4")
 ax.semilogy(x, QuadratureError8_Max,"--", markersize=3, alpha=0.8, label="GL n=8")
 ax.semilogy(x, QuadratureError16_Max,"-.",markersize=3, alpha=0.8, label="GL n=16")
+ax.semilogy(x, QuadratureError64_Max,":",markersize=3, alpha=0.8, label="GL n=64")
 plt.xlabel("Number of Energy Groups")
 plt.ylabel("Relative Error")
 ax.set_xlim(1,n_group_sets+2)

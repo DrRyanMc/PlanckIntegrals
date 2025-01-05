@@ -91,6 +91,8 @@ if __name__ == "__main__":
                 tick_labels=["Clark 21-10", "Clark 9-3", "PolyLog", "Rational", "Zimmerman", "Goldin", "Quadrature n=4", "Quadrature n=16", "Quadrature n=64"],
                 flierprops=dict(marker='.', markersize=1, linestyle='none'),
                 showfliers=False)
+    
+    ax.grid(True, which="both", linestyle="--", alpha=0.5, linewidth=0.5)   
     plt.yscale('log')
     plt.ylabel("Time per function call (ns)")
     plt.xticks(rotation=45, ha='right')
