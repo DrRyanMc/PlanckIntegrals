@@ -97,5 +97,7 @@ if __name__ == "__main__":
     plt.ylabel("Time per function call (ns)")
     plt.xticks(rotation=45, ha='right')
     plt.tight_layout()
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
     plt.savefig("timing.pdf")
     plt.show()
