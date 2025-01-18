@@ -21,7 +21,16 @@ class HandlerLineEmoji(HandlerLine2D):
             ha='center', va='center', transform=trans
         )
         return [line, emoji]
-
+class HandlerLineEmojiStar(HandlerLine2D):
+    def create_artists(self, legend, orig_handle, xdescent, ydescent, width, height, fontsize, trans):
+        line = super().create_artists(legend, orig_handle, xdescent, ydescent, width, height, fontsize, trans)[0]
+        # Add an emoji as text
+        emoji = legend.get_figure().text(
+            xdescent + width / 2, ydescent + height / 2, "✩", color="blue",
+            fontsize= 14, #fontsize, 
+            ha='center', va='center', transform=trans
+        )
+        return [line, emoji]
 n_group_sets = 99
 ClarkError_Median = np.zeros(n_group_sets-1)
 ClarkError_Max = np.zeros(n_group_sets-1)
@@ -166,7 +175,7 @@ plt.savefig("BenchmarkResults/ClarkPolyRationalError.pdf")
 plt.show()
 
 fig, ax = plt.subplots()
-ax.semilogy(x, ClarkError_Max93,"-", label="Clark (9,3)")
+ax.semilogy(x, ClarkError_Max93,"k-", label="Clark (9,3)")
 #ax.semilogy(x, GoldinError_Max,"--", label="Goldin")
 line_goldin, = ax.semilogy(x, GoldinError_Max,color='gray', alpha=0.8, label="Goldin")
 
@@ -174,7 +183,9 @@ line_goldin, = ax.semilogy(x, GoldinError_Max,color='gray', alpha=0.8, label="Go
 for xs, y in zip(x[0:-1:10], GoldinError_Max[0:-1:10]):
     plt.text(xs, y, '☭', color="red", fontsize=14, ha='center', va='center')
 
-ax.semilogy(x, ZimmermanError_Max,"--", label="Zimmerman")
+line_zimmerman, = ax.semilogy(x, ZimmermanError_Max,"b-", label="Zimmerman")
+for xs, y in zip(x[0:-1:10], ZimmermanError_Max[0:-1:10]):
+    plt.text(xs, y, '✩', color="blue", fontsize=14, ha='center', va='center')
 #ax.semilogy(x, QuadratureError2_Max,"-.", markersize=3, alpha=0.8, label="GL n=2")
 plt.xlabel("Number of Energy Groups")
 plt.ylabel("Relative Error")
@@ -188,7 +199,7 @@ ax.grid(True, which="both", linestyle="--", alpha=0.5, linewidth=0.5)
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
 #plt.legend()
-plt.legend(handler_map={line_goldin: HandlerLineEmoji()}, fontsize=12)
+plt.legend(handler_map={line_goldin: HandlerLineEmoji(), line_zimmerman:HandlerLineEmojiStar()}, fontsize=12)
 plt.savefig("BenchmarkResults/ClarkGoldinZimmermanError.pdf")
 #print("Max Error Clark: ", ClarkError_Max)
 plt.show()
