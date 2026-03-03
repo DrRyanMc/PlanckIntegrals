@@ -8,7 +8,7 @@ rational approximation to Π(x) as described in the paper.
 Units:
 - Frequency (ν): keV (energy units)
 - Temperature (T): keV
-- Energy density: GJ/cm³
+- Integrated intensity: GJ/(cm²·ns·steradian)
 
 Functions:
 - Bg(nu_low, nu_high, T): Incomplete Planck integral over frequency range
@@ -53,7 +53,7 @@ def Bg(nu_low, nu_high, T):
     """
     Compute the incomplete Planck integral over a frequency range.
     
-    This function evaluates the energy density contribution from radiation
+    This function evaluates the integrated intensity contribution from radiation
     in the frequency range [nu_low, nu_high] at temperature T.
     
     Parameters:
@@ -62,7 +62,7 @@ def Bg(nu_low, nu_high, T):
         T (float): Temperature in keV
         
     Returns:
-        float: Energy density in GJ/cm³
+        float: Integrated intensity in GJ/(cm²·ns·steradian)
         
     Notes:
         - Based on the rational approximation to Π(x)
@@ -100,7 +100,7 @@ def dBgdT(nu_low, nu_high, T):
         T (float): Temperature in keV
         
     Returns:
-        float: Temperature derivative in GJ/(cm³·keV)
+        float: Temperature derivative in GJ/(cm²·ns·steradian·keV)
         
     Notes:
         - Uses Rosseland function Y(x) from equation (30)

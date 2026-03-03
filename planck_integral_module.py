@@ -8,7 +8,7 @@ rational approximation to Π(x) as described in the paper.
 Units:
 - Frequency (ν): keV (energy units)
 - Temperature (T): keV
-- Energy density: GJ (gigajoules)
+- Integrated intensity: GJ/(cm²·ns·steradian)
 
 Functions:
 - Bg(nu_low, nu_high, T): Incomplete Planck integral over frequency range
@@ -55,7 +55,7 @@ def Bg(nu_low, nu_high, T):
     """
     Compute the incomplete Planck integral over a frequency range.
     
-    This function evaluates the energy density contribution from radiation
+    This function evaluates the integrated intensity contribution from radiation
     in the frequency range [nu_low, nu_high] at temperature T.
     
     Parameters:
@@ -64,7 +64,7 @@ def Bg(nu_low, nu_high, T):
         T (float): Temperature in keV
         
     Returns:
-        float: Energy density in GJ/cm³
+        float: Integrated intensity in GJ/(cm²·ns·steradian)
         
     Notes:
         - Based on the rational approximation to Π(x)
@@ -102,7 +102,7 @@ def dBgdT(nu_low, nu_high, T):
         T (float): Temperature in keV
         
     Returns:
-        float: Temperature derivative in GJ/(cm³·keV)
+        float: Temperature derivative in GJ/(cm²·ns·steradian·keV)
         
     Notes:
         - Uses Rosseland function Y(x) from equation (30)
@@ -236,17 +236,17 @@ def dBgdT_array(nu_low, nu_high, T):
 @njit(fastmath=True, cache=True, parallel=True)
 def Bg_multigroup_GJ(nu_bounds, T):
     """
-    Compute Planck integrals for multiple frequency groups with output in GJ/cm^3.
+    Compute Planck integrals for multiple frequency groups with output in GJ/(cm²·ns·steradian).
     
     Note: This is now an alias for Bg_multigroup() since that function already
-    returns values in GJ/cm^3 with proper physical constants.
+    returns values in GJ/(cm²·ns·steradian) with proper physical constants.
     
     Parameters:
         nu_bounds (np.ndarray): Array of frequency group boundaries in keV (length n+1)
         T (float): Temperature in keV
         
     Returns:
-        np.ndarray: Array of energy densities in GJ/cm^3 for each group (length n)
+        np.ndarray: Array of integrated intensities in GJ/(cm²·ns·steradian) for each group (length n)
     """
     return Bg_multigroup(nu_bounds, T)
 
@@ -254,17 +254,17 @@ def Bg_multigroup_GJ(nu_bounds, T):
 @njit(fastmath=True, cache=True, parallel=True)
 def dBgdT_multigroup_GJ(nu_bounds, T):
     """
-    Compute temperature derivatives for multiple frequency groups with output in GJ/(cm^3·keV).
+    Compute temperature derivatives for multiple frequency groups with output in GJ/(cm²·ns·steradian·keV).
     
     Note: This is now an alias for dBgdT_multigroup() since that function already
-    returns values in GJ/(cm^3·keV) with proper physical constants.
+    returns values in GJ/(cm²·ns·steradian·keV) with proper physical constants.
     
     Parameters:
         nu_bounds (np.ndarray): Array of frequency group boundaries in keV (length n+1)
         T (float): Temperature in keV
         
     Returns:
-        np.ndarray: Array of temperature derivatives in GJ/(cm^3·keV) for each group (length n)
+        np.ndarray: Array of temperature derivatives in GJ/(cm²·ns·steradian·keV) for each group (length n)
     """
     return dBgdT_multigroup(nu_bounds, T)
 
@@ -286,8 +286,8 @@ if __name__ == "__main__":
     print(f"\nTest 1: Single frequency group")
     print(f"  Temperature: {T} keV")
     print(f"  Frequency range: [{nu_low}, {nu_high}] keV")
-    print(f"  Bg(nu_low, nu_high, T) = {planck:.6e} GJ/cm³")
-    print(f"  dBgdT(nu_low, nu_high, T) = {rosseland:.6e} GJ/(cm³·keV)")
+    print(f"  Bg(nu_low, nu_high, T) = {planck:.6e} GJ/(cm²·ns·steradian)")
+    print(f"  dBgdT(nu_low, nu_high, T) = {rosseland:.6e} GJ/(cm²·ns·steradian·keV)")
     
     # Test 2: Multiple temperature values
     temperatures = np.array([0.5, 1.0, 2.0, 5.0])
@@ -295,7 +295,7 @@ if __name__ == "__main__":
     for temp in temperatures:
         planck = Bg(nu_low, nu_high, temp)
         rosseland = dBgdT(nu_low, nu_high, temp)
-        print(f"  T = {temp:4.1f} keV: Bg = {planck:12.6e} GJ/cm³, dBgdT = {rosseland:12.6e} GJ/(cm³·keV)")
+        print(f"  T = {temp:4.1f} keV: Bg = {planck:12.6e} GJ/(cm²·ns·steradian), dBgdT = {rosseland:12.6e} GJ/(cm²·ns·steradian·keV)")
     
     # Test 3: Multigroup calculation
     nu_bounds = np.array([0.01, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0])
@@ -309,15 +309,15 @@ if __name__ == "__main__":
     print(f"  Planck integrals by group:")
     for i, (bg_val, dbdt_val) in enumerate(zip(planck_groups, rosseland_groups)):
         print(f"    Group {i+1} [{nu_bounds[i]:.2f}, {nu_bounds[i+1]:.2f}]: "
-              f"Bg = {bg_val:10.6e} GJ/cm³, dBgdT = {dbdt_val:10.6e} GJ/(cm³·keV)")
+              f"Bg = {bg_val:10.6e} GJ/(cm²·ns·steradian), dBgdT = {dbdt_val:10.6e} GJ/(cm²·ns·steradian·keV)")
     
     # Test 4: Check normalization (integrate over all frequencies)
     nu_bounds_full = np.array([0.0, 100.0])  # Effectively 0 to infinity in reduced units
     T = 1.0
     full_integral = Bg(nu_bounds_full[0], nu_bounds_full[1], T)
     print(f"\nTest 4: Full integral (0 to 100 keV at T=1 keV)") 
-    print(f"  Bg(0, 100, 1.0) = {full_integral:.8f} GJ/cm³")
-    print(f"  Should equal (\u03c3_SB/\u03c0)*T^4 = {SIGMA_SB_OVER_PI:.8f} GJ/cm³")
+    print(f"  Bg(0, 100, 1.0) = {full_integral:.8f} GJ/(cm²·ns·steradian)")
+    print(f"  Should equal (σ_SB/π)*T^4 = {SIGMA_SB_OVER_PI:.8f} GJ/(cm²·ns·steradian)")
     print(f"  Relative error: {abs(full_integral - SIGMA_SB_OVER_PI)/SIGMA_SB_OVER_PI * 100:.4f}%")
     
     # Test 5: Verification against Mathematica
@@ -330,18 +330,18 @@ if __name__ == "__main__":
     upper_mathematica =0.181145
 
     result_GJ_cm3 = Bg(nu_low_test, nu_high_test, T_test)
-    expected_mathematica = 0.0920939  # GJ/cm^3
+    expected_mathematica = 0.0920939  # GJ/(cm²·ns·steradian)
 
     rosseland_result = dBgdT(nu_low_test, nu_high_test, T_test)
     expected_mathematica_rosseland = 0.0870939
     print(f"\nTest 5: Verification against Mathematica")
     print(f"  Parameters: nu_low={nu_low_test} keV, nu_high={nu_high_test} keV, T={T_test} keV")
-    print(f"  Bg result: {result_GJ_cm3:.6f} GJ/cm³")
-    print(f"  Expected (Mathematica): {expected_mathematica:.6f} GJ/cm^3")
+    print(f"  Bg result: {result_GJ_cm3:.6f} GJ/(cm²·ns·steradian)")
+    print(f"  Expected (Mathematica): {expected_mathematica:.6f} GJ/(cm²·ns·steradian)")
     print(f"  Relative error: {abs(result_GJ_cm3 - expected_mathematica)/expected_mathematica * 100:.4f}%")
-    print(f"  Upper part: {upper_part:.6f} GJ/cm³, expected from Mathematica {upper_mathematica}")
-    print(f"  dBgdT result: {rosseland_result:.6f} GJ/(cm³·keV)")
-    print(f"  Expected (Mathematica): {expected_mathematica_rosseland:.6f} GJ/(cm³·keV)")
+    print(f"  Upper part: {upper_part:.6f} GJ/(cm²·ns·steradian), expected from Mathematica {upper_mathematica}")
+    print(f"  dBgdT result: {rosseland_result:.6f} GJ/(cm²·ns·steradian·keV)")
+    print(f"  Expected (Mathematica): {expected_mathematica_rosseland:.6f} GJ/(cm²·ns·steradian·keV)")
     print(f"  Relative error: {abs(rosseland_result - expected_mathematica_rosseland)/expected_mathematica_rosseland * 100:.4f}%")
     
     

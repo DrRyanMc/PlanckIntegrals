@@ -66,8 +66,8 @@ from planck_integral_module import Bg, dBgdT, Bg_multigroup, dBgdT_multigroup
 
 - **Frequency (ν)**: keV (energy units)
 - **Temperature (T)**: keV
-- **Energy density**: GJ/cm³
-- **Temperature derivative**: GJ/(cm³·keV)
+- **Integrated intensity**: GJ/(cm²·ns·steradian)
+- **Temperature derivative**: GJ/(cm²·ns·steradian·keV)
 
 ### Physical Constants
 
@@ -88,15 +88,15 @@ Compute the incomplete Planck integral over a frequency range.
 - `nu_high` (float): Upper frequency bound in keV
 - `T` (float): Temperature in keV
 
-**Returns**: Energy density in GJ/cm³
+**Returns**: Integrated intensity in GJ/(cm²·ns·steradian)
 
 **Example**:
 ```python
 from planck_integral_module import Bg
 
 # Compute Planck integral for a single frequency group
-energy_density = Bg(nu_low=1.0, nu_high=4.0, T=2.0)
-print(f"Energy density: {energy_density:.6f} GJ/cm³")
+integrated_intensity = Bg(nu_low=1.0, nu_high=4.0, T=2.0)
+print(f"Integrated intensity: {integrated_intensity:.6f} GJ/(cm²·ns·steradian)")
 ```
 
 ### `dBgdT(nu_low, nu_high, T)`
@@ -112,7 +112,7 @@ where Y(x) = Π(x) - 15/(4π⁴) × x⁴/(eˣ - 1)
 - `nu_high` (float): Upper frequency bound in keV
 - `T` (float): Temperature in keV
 
-**Returns**: Temperature derivative in GJ/(cm³·keV)
+**Returns**: Temperature derivative in GJ/(cm²·ns·steradian·keV)
 
 **Example**:
 ```python
@@ -120,7 +120,7 @@ from planck_integral_module import dBgdT
 
 # Compute temperature derivative for radiation diffusion
 temp_derivative = dBgdT(nu_low=1.0, nu_high=4.0, T=2.0)
-print(f"Temperature derivative: {temp_derivative:.6f} GJ/(cm³·keV)")
+print(f"Temperature derivative: {temp_derivative:.6f} GJ/(cm²·ns·steradian·keV)")
 ```
 
 ### `Bg_multigroup(nu_bounds, T)`
@@ -131,7 +131,7 @@ Compute Planck integrals for multiple frequency groups in parallel.
 - `nu_bounds` (np.ndarray): Array of frequency group boundaries in keV (length n+1)
 - `T` (float): Temperature in keV
 
-**Returns**: Array of energy densities in GJ/cm³ for each group (length n)
+**Returns**: Array of integrated intensities in GJ/(cm²·ns·steradian) for each group (length n)
 
 **Example**:
 ```python
@@ -143,11 +143,11 @@ group_bounds = np.array([0.1, 0.5, 1.0, 2.0, 5.0, 10.0])  # 5 groups
 T = 1.5  # keV
 
 # Compute Planck integrals for all groups
-energy_densities = Bg_multigroup(group_bounds, T)
+integrated_intensities = Bg_multigroup(group_bounds, T)
 
-for i, energy in enumerate(energy_densities):
+for i, intensity in enumerate(integrated_intensities):
     print(f"Group {i+1} [{group_bounds[i]:.2f}, {group_bounds[i+1]:.2f}] keV: "
-          f"{energy:.6e} GJ/cm³")
+          f"{intensity:.6e} GJ/(cm²·ns·steradian)")
 ```
 
 ### `dBgdT_multigroup(nu_bounds, T)`
@@ -158,7 +158,7 @@ Compute Rosseland integrals for multiple frequency groups in parallel.
 - `nu_bounds` (np.ndarray): Array of frequency group boundaries in keV (length n+1)
 - `T` (float): Temperature in keV
 
-**Returns**: Array of temperature derivatives in GJ/(cm³·keV) for each group (length n)
+**Returns**: Array of temperature derivatives in GJ/(cm²·ns·steradian·keV) for each group (length n)
 
 **Example**:
 ```python
@@ -173,7 +173,7 @@ T = 1.5  # keV
 derivatives = dBgdT_multigroup(group_bounds, T)
 
 for i, deriv in enumerate(derivatives):
-    print(f"Group {i+1}: dBgdT = {deriv:.6e} GJ/(cm³·keV)")
+    print(f"Group {i+1}: dBgdT = {deriv:.6e} GJ/(cm²·ns·steradian·keV)")
 ```
 
 ## Complete Example
@@ -192,8 +192,8 @@ rosseland_integral = dBgdT(nu_low, nu_high, T)
 
 print(f"Temperature: {T} keV")
 print(f"Frequency range: [{nu_low}, {nu_high}] keV")
-print(f"Planck integral: {planck_integral:.6f} GJ/cm³")
-print(f"Rosseland integral: {rosseland_integral:.6f} GJ/(cm³·keV)")
+print(f"Planck integral: {planck_integral:.6f} GJ/(cm²·ns·steradian)")
+print(f"Rosseland integral: {rosseland_integral:.6f} GJ/(cm²·ns·steradian·keV)")
 
 # Example 2: Multigroup calculation
 group_bounds = np.logspace(-1, 1, 11)  # 10 groups from 0.1 to 10 keV
@@ -205,8 +205,8 @@ rosseland_groups = dBgdT_multigroup(group_bounds, T)
 print(f"\nMultigroup results at T = {T} keV:")
 for i in range(len(planck_groups)):
     print(f"Group {i+1} [{group_bounds[i]:.3f}, {group_bounds[i+1]:.3f}] keV: "
-          f"Bg = {planck_groups[i]:.3e} GJ/cm³, "
-          f"dBgdT = {rosseland_groups[i]:.3e} GJ/(cm³·keV)")
+          f"Bg = {planck_groups[i]:.3e} GJ/(cm²·ns·steradian), "
+          f"dBgdT = {rosseland_groups[i]:.3e} GJ/(cm²·ns·steradian·keV)")
 
 # Example 3: Computing Planck and Rosseland mean opacities
 # Suppose you have absorption coefficients for each group
@@ -250,10 +250,10 @@ After installing the package, you can verify it's working correctly:
 
 ```python
 # Quick test
-python3 -c "from planck_integrals import Bg; print(f'Bg(1.0, 4.0, 2.0) = {Bg(1.0, 4.0, 2.0):.6f} GJ/cm³')"
+python3 -c "from planck_integrals import Bg; print(f'Bg(1.0, 4.0, 2.0) = {Bg(1.0, 4.0, 2.0):.6f} GJ/(cm²·ns·steradian)')"
 ```
 
-Expected output: `Bg(1.0, 4.0, 2.0) = 0.092094 GJ/cm³`
+Expected output: `Bg(1.0, 4.0, 2.0) = 0.092094 GJ/(cm²·ns·steradian)`
 
 Run the example script:
 ```bash
