@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "planck-integrals"
+version = "1.0.0"
+description = "Fast computation of incomplete Planck and Rosseland integrals using rational approximations"
+readme = "README.md"
+authors = [{name = "Ryan McClarren"}]
+license = {file = "LICENSE"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Physics",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+keywords = ["planck", "rosseland", "blackbody", "radiation", "thermodynamics", "integration"]
+requires-python = ">=3.7"
+dependencies = [
+    "numpy>=1.16.0",
+    "numba>=0.50.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/planck-integrals"
+Documentation = "https://github.com/yourusername/planck-integrals#readme"
+Repository = "https://github.com/yourusername/planck-integrals.git"

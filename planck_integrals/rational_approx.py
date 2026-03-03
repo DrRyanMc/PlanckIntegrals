@@ -193,6 +193,7 @@ def bRational(a,b):
     else:
         print("Invalid input values",a,b)
         assert 0, "Invalid input values" + str(a) + " " + str(b)
+
 @njit(fastmath=True, cache=True, parallel=True)
 def bRationalParallel(x,n):
     """
@@ -207,68 +208,3 @@ def bRationalParallel(x,n):
     for i in prange(len(x)-1):
         result[i] = bRational(x[i],x[i+1])
     return result
-if __name__ == "__main__":
-    # Test the polynomial evaluation
-    try:
-        from MPMathIntegral import compute_Pi, compute_PiParallel
-        # Example usage
-        z_value = 0.5  # Replace with the desired value of z
-        result = PlanckIntA(z_value)
-        print(f"Polynomial evaluated at z = {z_value}: {result}")
-        result2 = compute_Pi(0, z_value)
-        print(f"MPMath result: {result2}")
-        print(f"Error: {abs(result - result2)}")
-
-
-
-        # Example usage
-        z_value = 1.5  # Replace with the desired value of z
-        result = PlanckIntB(z_value)
-        print(f"Rational polynomial evaluated at z = {z_value}: {result}")
-        result2 = compute_Pi(0, z_value)
-        print(f"MPMath result: {result2}")
-        print(f"Error: {abs(result - result2)}")
-
-        result_diff = bRational(0.5,1.5)
-        result_MP = compute_Pi(0.5,1.5)
-        print(f"Integral from 0.5 to 1.5: {result_diff}")
-        print(f"MPMath result: {result_MP}")
-        print(f"Error: {abs(result_diff - result_MP)}")
-
-
-        # Example usage
-        z_value = 12.  # Replace with the desired value of z
-        result = 1+PlanckIntC(z_value)
-        print(f"Rational polynomial evaluated at z = {z_value}: {result}")
-        result2 = compute_Pi(0, z_value)
-        print(f"MPMath result: {result2}")
-        print(f"Error: {abs(result - result2)}")
-
-
-        result_diff = bRational(4,z_value)
-        result_MP = compute_Pi(4,z_value)
-        print(f"Integral from 4 to {z_value}: {result_diff}")
-        print(f"MPMath result: {result_MP}")
-        print(f"Error: {abs(result_diff - result_MP)}")
-
-        result_diff = bRational(19.9,20)
-        result_MP = 2.6501765584645523322e-7
-        print(f"Integral from 19.9 to 20: {result_diff}")
-        print(f"MPMath result: {result_MP}")
-        print(f"Error: {abs(result_diff - result_MP)}")
-
-        result_diff = bRational(19.9,50)
-        result_MP = 3.2250573960478671454e-6
-        print(f"Integral from 19.9 to 50: {result_diff}")
-        print(f"MPMath result: {result_MP}")
-        print(f"Error: {abs(result_diff - result_MP)}")
-
-        #test parallel
-        x = np.zeros(101)
-        x[1:] = np.logspace(-1,math.log10(40),100)
-        result_diff = bRationalParallel(x,100)
-        result_MP = compute_PiParallel(x,100)
-        print(f"Max error: {np.max(np.abs(result_diff - result_MP))}")
-
-    except Exception as e:
-        print(f"Error in evaluate_polynomial: {e}")
